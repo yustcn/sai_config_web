@@ -3,8 +3,10 @@ angular.module('RawdataDownloadTool', [])
     $http.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
     $http.defaults.headers.post['dataType'] = 'json'
     $scope.isShow=false;
+
     $scope.submit = function() {
-        $http.post('http://localhost:8000/rawdata/v1/search', {'clientId': $scope.clientId, 'audioType': $scope.audioType,
+        var url = "http://cs-" + $scope.stage + ".sai.corp:8000/rawdata/v1/search"
+        $http.post(url, {'clientId': $scope.clientId, 'audioType': $scope.audioType,
                             'beginTime':$scope.beginTime,
                             'endTime': $scope.endTime }
             )
@@ -14,10 +16,11 @@ angular.module('RawdataDownloadTool', [])
                     angular.forEach($scope.resultItems, function(item){
                         item.createTime = new Date(item.createTime).toISOString();
                     });
-                    if ($scope.resultItems.length > 0) {
+                    if ($scope.resultItems && $scope.resultItems.length > 0) {
                         $scope.downloadUrl=response.data.downLoadUrl;
                         $scope.isShow=true;
                     } else {
+                        alert("没有找到结果.")
                         $scope.isShow=false;
                     }
                 } else {
