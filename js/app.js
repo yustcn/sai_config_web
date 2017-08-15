@@ -14,7 +14,7 @@ angular.module('RawdataDownloadTool', [])
                     if(response.status == 200 && response.data.errorCode == 0){
                         $scope.resultItems = response.data.rawDataEntities;
                         angular.forEach($scope.resultItems, function(item){
-                            item.createTime = new Date(item.createTime).toISOString();
+                            item.createTime = new Date(item.createTime + 8*3600*1000).toISOString();
                         });
                         if ($scope.resultItems && $scope.resultItems.length > 0) {
                             $scope.downloadUrl=response.data.downLoadUrl;
