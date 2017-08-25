@@ -5,6 +5,8 @@ angular.module('RawdataDownloadTool', [])
     $scope.isShow=false;
 
     $scope.submit = function(isValid) {
+        $scope.isShow = false;
+        $scope.resultItems = null;
         if (isValid) {
             $http.post("/rawdata/v1/search", {'clientId': $scope.clientId,
                                                 'diaLogId': $scope.dialogId ,
