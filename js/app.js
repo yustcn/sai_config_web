@@ -6,9 +6,11 @@ angular.module('RawdataDownloadTool', [])
 
     $scope.submit = function(isValid) {
         if (isValid) {
-            $http.post("/rawdata/v1/search", {'clientId': $scope.clientId, 'audioType': $scope.audioType,
-                                'beginTime':$scope.beginTime,
-                                'endTime': $scope.endTime }
+            $http.post("/rawdata/v1/search", {'clientId': $scope.clientId,
+                                                'diaLogId': $scope.dialogId ,
+                                                'audioType': $scope.audioType,
+                                                'beginTime':$scope.beginTime,
+                                                'endTime': $scope.endTime }
                 )
                 .then(function successCallback(response) {
                     if(response.status == 200 && response.data.errorCode == 0){
