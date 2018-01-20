@@ -1,40 +1,64 @@
 angular.module('RawdataDownloadTool', [])
-.controller('RawdataDownloadToolController', function ($scope, $http) {
-    $http.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
-    $http.defaults.headers.post['dataType'] = 'json'
-    $scope.isShow=false;
+    .controller('RawdataDownloadToolController', function ($scope, $http) {
+        $http.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
+        $http.defaults.headers.post['dataType'] = 'json'
+        $scope.isShow=false;
+        $scope.isShowImg=false;
+        $scope.sub_text='Submit';
 
-    $scope.submit = function(isValid) {
-        $scope.isShow = false;
-        $scope.resultItems = null;
-        if (isValid) {
-            $http.post("/rawdata/v1/search", {'clientId': $scope.clientId,
-                                                'diaLogId': $scope.dialogId ,
-                                                'audioType': $scope.audioType,
-                                                'beginTime':$scope.beginTime,
-                                                'endTime': $scope.endTime }
+        $scope.submit = function(isValid) {
+            $scope.isShow = false;
+            $scope.resultItems = null;
+            if (isValid) {
+
+                $scope.sub_text='加 载 中';
+                $scope.isShowImg=true;
+                $scope.sub_disable=true;
+
+                $http.post("/rawdata/v1/search", {'clientId': $scope.clientId,
+                    'diaLogId': $scope.dialogId ,
+                    'audioType': $scope.audioType,
+                    'beginTime':$scope.beginTime,
+                    'endTime': $scope.endTime }
                 )
-                .then(function successCallback(response) {
-                    if(response.status == 200 && response.data.errorCode == 0){
-                        $scope.resultItems = response.data.rawDataEntities;
-                        angular.forEach($scope.resultItems, function(item){
-                            item.createTime = new Date(item.createTime + 8*3600*1000).toISOString();
-                        });
-                        if ($scope.resultItems && $scope.resultItems.length > 0) {
-                            $scope.downloadUrl=response.data.downLoadUrl;
-                            $scope.isShow=true;
-                        } else {
-                            alert("没有找到结果.")
-                            $scope.isShow=false;
-                        }
-                    } else {
-                        alert("error " + response.data.errorCode + " errorMsg " + response.data.errorMessage)
-                    }
-                }, function errorCallback(response) {
-                    alert("error " + response.status);
-                });
-        }
+                    .then(function successCallback(response) {
 
-    };
-});
+                        if(response.status == 200 && response.data.errorCode == 0){
+
+                            $scope.resultItems = response.data.rawDataEntities;
+                            angular.forEach($scope.resultItems, function(item){
+                                item.createTime = new Date(item.createTime + 8*3600*1000).toISOString();
+                            });
+                            if ($scope.resultItems && $scope.resultItems.length > 0) {
+                                $scope.downloadUrl=response.data.downLoadUrl;
+                                $scope.isShow=true;
+
+                                $scope.sub_disable=false;
+                                $scope.sub_text='Submit';
+                                $scope.isShowImg=false;
+                            } else {
+                                alert("没有找到结果.")
+                                $scope.isShow=false;
+                                $scope.sub_disable=false;
+                                $scope.sub_text='Submit';
+                                $scope.isShowImg=false;
+                            }
+                        } else {
+                            alert("error " + response.data.errorCode + " errorMsg " + response.data.errorMessage);
+
+                            $scope.sub_disable=false;
+                            $scope.sub_text='Submit';
+                            $scope.isShowImg=false;
+
+                        }
+                    }, function errorCallback(response) {
+                        alert("error " + response.status);
+                        $scope.sub_disable=false;
+                        $scope.sub_text='Submit';
+                        $scope.isShowImg=false;
+                    });
+            }
+
+        };
+    });
 
