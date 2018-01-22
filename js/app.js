@@ -5,6 +5,7 @@ angular.module('RawdataDownloadTool', [])
         $scope.isShow=false;
         $scope.isShowImg=false;
         $scope.sub_text='Submit';
+        $scope.is_show_page=true;
 
         $scope.submit = function(isValid) {
             $scope.isShow = false;
