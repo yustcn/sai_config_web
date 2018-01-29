@@ -1,7 +1,6 @@
 APP.controller('RawdataDownloadToolController',
     function($scope, $http) {
         var ctrl = this;
-        var i = 100;
         $http.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
         $http.defaults.headers.post['dataType'] = 'json';
         $scope.isShow = false;
@@ -22,8 +21,7 @@ APP.controller('RawdataDownloadToolController',
                     'beginTime': $scope.beginTime,
                     'endTime': $scope.endTime,
                     'currentPage': "0",
-                    'pageSize': "100"  //这里设置每个分页多少条数据
-
+                    'pageSize': "340" //这里设置每个分页多少条数据
                 }).then(function successCallback(response) {
                         if (response.status == 200 && response.data.errorCode == 0) {
                             $scope.resultItems = response.data.rawDataEntities;
@@ -38,86 +36,72 @@ APP.controller('RawdataDownloadToolController',
                                 $scope.sub_text = 'Submit';
                                 $scope.isShowImg = false;
                                 ctrl.itemCnt = response.data.totalCount;
-                                ctrl.currentPage = response.data.currentPage;
                                 ctrl.itemCntEachPage = response.data.pageSize;
-                                $scope.is_show_paging=true;
+                                $scope.is_show_paging = true;
+
                                 ctrl.onChange = function() {
-                                    i++;
-                                    if (i % 2 == 1) {
-                                        $scope.isShowImg2 = true;
-                                        $http.post("/rawdata/v1/search_by_page", {
-                                            'clientId': $scope.clientId,
-                                            'diaLogId': $scope.diaLogId,
-                                            'audioType': $scope.audioType,
-                                            'beginTime': $scope.beginTime,
-                                            'endTime': $scope.endTime,
-                                            'currentPage': ctrl.currentPage,
-                                            'pageSize': ctrl.itemCntEachPage
-                                        }).then(function successCallback(response) {
-                                                if (response.status == 200 && response.data.errorCode == 0) {
-                                                    $scope.resultItems = response.data.rawDataEntities;
-                                                    angular.forEach($scope.resultItems,
-                                                        function(item) {
-                                                            item.createTime = new Date(item.createTime + 8 * 3600 * 1000).toISOString();
-                                                        });
-                                                    if ($scope.resultItems && $scope.resultItems.length > 0) {
-                                                        $scope.downloadUrl = response.data.downLoadUrl;
-                                                        $scope.isShow = true;
-                                                        $scope.sub_disable = false;
-                                                        $scope.sub_text = 'Submit';
-                                                        $scope.isShowImg = false;
-
-                                                        ctrl.itemCnt = response.data.totalCount;
-                                                        ctrl.currentPage = response.data.currentPage;
-                                                        ctrl.itemCntEachPage = response.data.pageSize;
-                                                    } else {
-                                                        alert("没有找到结果.");
-                                                        $scope.isShow = false;
-                                                        $scope.sub_disable = false;
-                                                        $scope.sub_text = 'Submit';
-                                                        $scope.isShowImg = false;
-                                                    }
+                                    $scope.isShowImg2 = true;
+                                    $http.post("/rawdata/v1/search_by_page", {
+                                        'clientId': $scope.clientId,
+                                        'diaLogId': $scope.diaLogId,
+                                        'audioType': $scope.audioType,
+                                        'beginTime': $scope.beginTime,
+                                        'endTime': $scope.endTime,
+                                        'currentPage': ctrl.currentPage,
+                                        'pageSize': ctrl.itemCntEachPage
+                                    }).then(function successCallback(response) {
+                                            if (response.status == 200 && response.data.errorCode == 0) {
+                                                $scope.resultItems = response.data.rawDataEntities;
+                                                angular.forEach($scope.resultItems,
+                                                    function(item) {
+                                                        item.createTime = new Date(item.createTime + 8 * 3600 * 1000).toISOString();
+                                                    });
+                                                if ($scope.resultItems && $scope.resultItems.length > 0) {
+                                                    $scope.downloadUrl = response.data.downLoadUrl;
+                                                    $scope.isShow = true;
+                                                    $scope.sub_disable = false;
+                                                    $scope.sub_text = 'Submit';
+                                                    $scope.isShowImg = false;
+                                                    ctrl.itemCnt = response.data.totalCount;
+                                                    ctrl.itemCntEachPage = response.data.pageSize;
+                                                    $scope.isShowImg2 = false;
                                                 } else {
-                                                    alert("error " + response.data.errorCode + " errorMsg " + response.data.errorMessage);
-
+                                                    alert("没有找到结果.");
+                                                    $scope.isShow = false;
                                                     $scope.sub_disable = false;
                                                     $scope.sub_text = 'Submit';
                                                     $scope.isShowImg = false;
                                                 }
-                                            },
-                                            function errorCallback(response) {
-                                                alert("error " + response.status);
-                                                $scope.sub_disable = false;
-                                                $scope.sub_text = 'Submit';
-                                                $scope.isShowImg = false;
-                                            });
-
-                                    } else {
-
-                                        $scope.isShowImg2 = false;
-                                    }
+                                            } else {
+                                                alert("error " + response.data.errorCode + " errorMsg " + response.data.errorMessage);
+                                                queryEnd($scope);
+                                            }
+                                        },
+                                        function errorCallback(response) {
+                                            alert("error " + response.status);
+                                            queryEnd($scope);
+                                        });
                                 }
                             } else {
                                 alert("没有找到结果.");
                                 $scope.isShow = false;
-                                $scope.sub_disable = false;
-                                $scope.sub_text = 'Submit';
-                                $scope.isShowImg = false;
+                                queryEnd($scope);
                             }
                         } else {
                             alert("error " + response.data.errorCode + " errorMsg " + response.data.errorMessage);
-
-                            $scope.sub_disable = false;
-                            $scope.sub_text = 'Submit';
-                            $scope.isShowImg = false;
+                            queryEnd($scope);
                         }
                     },
                     function errorCallback(response) {
                         alert("error " + response.status);
-                        $scope.sub_disable = false;
-                        $scope.sub_text = 'Submit';
-                        $scope.isShowImg = false;
+                        queryEnd($scope);
                     });
             }
         };
     });
+
+function queryEnd($scope) {
+    $scope.sub_disable = false;
+    $scope.sub_text = 'Submit';
+    $scope.isShowImg = false;
+}
