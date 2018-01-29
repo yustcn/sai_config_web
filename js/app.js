@@ -21,7 +21,7 @@ APP.controller('RawdataDownloadToolController',
                     'beginTime': $scope.beginTime,
                     'endTime': $scope.endTime,
                     'currentPage': "0",
-                    'pageSize': "340" //这里设置每个分页多少条数据
+                    'pageSize': "100" //这里设置每个分页多少条数据
                 }).then(function successCallback(response) {
                         if (response.status == 200 && response.data.errorCode == 0) {
                             $scope.resultItems = response.data.rawDataEntities;
