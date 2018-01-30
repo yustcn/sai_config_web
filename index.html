@@ -1,90 +1,100 @@
 <!DOCTYPE html>
-<html lang="zh-CN" >
+<html ng-app="RawdataDownloadTool" lang="zh-CN">
 <head>
-  <meta charset="utf-8">
-  <meta name="description" content="">
-  <meta name="author" content="">
-  <!-- Note there is no responsive meta tag here -->
-  <title>声智科技</title>
-
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-  <link href="modules/bootstrap-datepicker/bootstrap-datetimepicker.min.css" rel="stylesheet">
-  <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-  <script src="modules/bootstrap-datepicker/bootstrap-datetimepicker.min.js"></script>
-  <script type="text/javascript">
-      $(function () {
-          $('#start_datetime').datetimepicker();
-          $('#end_datetime').datetimepicker();
-      });
-  </script>
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
-  <script src="js/app.js"></script>
+    <meta charset="utf-8" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>声智科技</title>
+    <link rel="stylesheet" href="./css/bootstrap.min.css" />
+    <link rel="stylesheet" href="./css/pagination.css" />
+    <script type="text/javascript" src="./js/jquery-2.2.3.min.js"></script>
+    <script type="text/javascript" src="./js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="./js/angular.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('#start_datetime').datetimepicker();
+            $('#end_datetime').datetimepicker();
+        });
+    </script>
+    <script type="text/javascript" src="./js/pagination.js"></script>
+    <script type="text/javascript" src="./js/app.js"></script>
 </head>
-
-<body>
-<div class="container" ng-app="RawdataDownloadTool" ng-controller="RawdataDownloadToolController">
-  <div class="row ng-hide"  ng-show="is_show_page">
-    <div class="col-xs-10">
-      <div class="panel panel-info">
-        <div class="panel-heading">获取原始数据</div>
-        <div class="panel-body">
-          <form name="userForm" ng-submit="submit(userForm.$valid)">
-            <div class="form-group">
-              <label for="clientId">client_id</label>
-              <input type="text" class="form-control" id="clientId" placeholder="client_id" ng-model="clientId" required />
+<body ng-controller="RawdataDownloadToolController as ctrl">
+<div class="container">
+    <div class="row ng-hide" ng-show="is_show_page">
+        <div class="col-xs-10">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    获取原始数据
+                </div>
+                <div class="panel-body">
+                    <form name="userForm" ng-submit="submit(userForm.$valid)">
+                        <div class="form-group">
+                            <label for="clientId">client_id</label>
+                            <input type="text" class="form-control" id="clientId" placeholder="client_id" ng-model="clientId" required="" />
+                        </div>
+                        <div class="form-group">
+                            <label for="dialogId">dialog_id</label>
+                            <input type="text" class="form-control" id="dialogId" placeholder="dialog_id" ng-model="dialogId" />
+                        </div>
+                        <div class="form-group">
+                            <label for="audio_type">audio_type</label>
+                            <input type="text" class="form-control" id="audio_type" placeholder="audio_type" ng-model="audioType" />
+                        </div>
+                        <div class="form-group">
+                            <label for="start_datetime">from</label>
+                            <input type="text" id="start_datetime" class="form-control" value="" data-date-format="yyyy-mm-dd hh:ii:ss" ng-model="beginTime" />
+                        </div>
+                        <div class="form-group">
+                            <label for="end_datetime">to</label>
+                            <input type="text" id="end_datetime" class="form-control" value="" data-date-format="yyyy-mm-dd hh:ii:ss" ng-model="endTime" />
+                        </div>
+                        <button id="submit_id" type="submit" ng-model="sub_text" ng-disabled="sub_disable" class="btn btn-primary">{{ sub_text }}</button>
+                        <img id="img_id" src="img/1.gif" ng-show="isShowImg" />
+                    </form>
+                </div>
             </div>
-            <div class="form-group">
-              <label for="dialogId">dialog_id</label>
-              <input type="text" class="form-control" id="dialogId" placeholder="dialog_id" ng-model="dialogId" />
+            <div class="panel panel-info infobg">
+                <div class="panel-heading">
+                    搜索结果
+                </div>
+                <div class="panel-body">
+                    <table class="table table-striped table-bordered table-condensed">
+                        <thead>
+                        <tr>
+                            <th>dialog_id</th>
+                            <th>audio_type</th>
+                            <th>content</th>
+                            <th>create_time</th>
+                            <th>client_id</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="item in resultItems">
+                            <td>{{item.diaLogId}}</td>
+                            <td>{{item.audioType}}</td>
+                            <td>{{item.content}}</td>
+                            <td>{{item.createTime}}</td>
+                            <td>{{item.clientId}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div class="row" ng-show="isShow">
+                        <div class="col-md-1">
+                            <a class="btn btn-success" href="{{downloadUrl}}">下载</a>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-              <label for="audio_type">audio_type</label>
-              <input type="text" class="form-control" id="audio_type" placeholder="audio_type" ng-model="audioType" />
+            <div width="100%">
+                <img style="margin-left: 10%" id="img_id2" src="img/1.gif" ng-show="isShowImg2" />
             </div>
-            <div class="form-group">
-              <label for="start_datetime">from</label>
-              <input type="text" id="start_datetime" class="form-control" value="" data-date-format="yyyy-mm-dd hh:ii:ss" ng-model="beginTime" />
+            <div class="row ng-hide" ng-show="is_show_paging">
+                <pagination pg-item-cnt="ctrl.itemCnt" pg-current="ctrl.currentPage" pg-on-change="ctrl.onChange()" pg-home-text="首页" pg-end-text="尾页" pg-item-cnt-each-page="ctrl.itemCntEachPage">
+                </pagination>
             </div>
-            <div class="form-group">
-              <label for="end_datetime">to</label>
-              <input type="text" id="end_datetime" class="form-control" value="" data-date-format="yyyy-mm-dd hh:ii:ss" ng-model="endTime" />
-            </div>
-            <button id="submit_id" type="submit" ng-model="sub_text" ng-disabled="sub_disable" class="btn btn-primary">{{ sub_text }}</button>
-            <img id="img_id"  src="img/1.gif" ng-show="isShowImg" />
-          </form>
         </div>
-      </div>
-      <div class="panel panel-info infobg">
-        <div class="panel-heading"> 搜索结果 </div>
-        <div class="panel-body">
-          <table class="table table-striped table-bordered table-condensed">
-            <thead>
-            <tr>
-              <th>dialog_id</th>
-              <th>audio_type</th>
-              <th>content</th>
-              <th>create_time</th>
-              <th>client_id</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr ng-repeat="item in resultItems">
-              <td>{{item.diaLogId}}</td>
-              <td>{{item.audioType}}</td>
-              <td>{{item.content}}</td>
-              <td>{{item.createTime}}</td>
-              <td>{{item.clientId}}</td>
-            </tr>
-            </tbody>
-          </table>
-          <div class="row" ng-show="isShow">
-            <div class="col-md-1"><a class="btn btn-success" href="{{downloadUrl}}">下载</a></div>
-          </div>
-        </div>
-      </div>
     </div>
-  </div>
-</div> <!-- /container -->
+</div>
 </body>
 </html>
