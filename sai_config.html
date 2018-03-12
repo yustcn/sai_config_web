@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html ng-app="RawdataDownloadTool" lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>声智科技</title>
+    <link rel="stylesheet" href="./css/bootstrap.min.css" />
+    <link rel="stylesheet" href="./css/pagination.css" />
+    <script type="text/javascript" src="./js/jquery-2.2.3.min.js"></script>
+    <script type="text/javascript" src="./js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="./js/angular.min.js"></script>
+    <script type="text/javascript" src="./js/pagination.js"></script>
+    <script src="js/sai_config.js"></script>
+</head>
+<body ng-controller="RawdataDownloadToolController as ctrl">
+<div class="container">
+    <div class="row ng-hide" ng-show="is_show_page">
+        <div class="col-xs-10">
+            <div class="panel-body">
+                <form name="userForm" ng-submit="submit(userForm.$valid)" novalidate="">
+                    <div class="panel panel-info">
+                        <div class="panel-heading">
+                            required configs
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <div class="input-group" ng-class="{'has-error': !userForm.CORP.$valid && (  userForm.$submitted),
+                                                                    'has-success': userForm.CORP.$valid && (!userForm.$pristine || userForm.$submitted)}">
+                                    <label class="input-group-addon " for="CORP">CORP</label>
+                                    <input class="form-control" id="CORP" name="CORP" ng-model="CORP" type="text" required="" />
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="input-group" ng-class="{'has-error': !userForm.MicType.$valid && (  userForm.$submitted),
+                                                                    'has-success': userForm.MicType.$valid && (!userForm.$pristine || userForm.$submitted)}">
+                                    <label class="input-group-addon " for="MicType">MicType</label>
+                                    <!--<input class="form-control" id="MicType" name="MicType" ng-model="MicType" type="number" required="" />-->
+                                    <select  class="form-control" id="MicType" name="MicType" ng-model="MicType"  required>
+                                        <option value="0">0</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="input-group" ng-class="{'has-error': !userForm.MIC_RADIUS.$valid && (  userForm.$submitted),
+                                                                    'has-success': userForm.MIC_RADIUS.$valid && (!userForm.$pristine || userForm.$submitted)}">
+                                    <label class="input-group-addon " for="MIC_RADIUS">MIC_RADIUS</label>
+                                    <input class="form-control" id="MIC_RADIUS" name="MIC_RADIUS" ng-model="MIC_RADIUS" type="number" required="" />
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="input-group" ng-class="{'has-error': !userForm.NFFT.$valid && (  userForm.$submitted),
+                                                                    'has-success': userForm.NFFT.$valid && (!userForm.$pristine || userForm.$submitted)}">
+                                    <label class="input-group-addon " for="NFFT">NFFT</label>
+                                    <input class="form-control" id="NFFT" name="NFFT" ng-model="NFFT" type="number" required="" />
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <div class="input-group" ng-class="{'has-error': !userForm.In_len.$valid && (  userForm.$submitted),
+                                                                    'has-success': userForm.In_len.$valid && (!userForm.$pristine || userForm.$submitted)}">
+                                    <label class="input-group-addon " for="In_len">In_len</label>
+                                    <input class="form-control" id="In_len" name="In_len" ng-model="In_len" type="number" required="" />
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="input-group" ng-class="{'has-error': !userForm.Fs.$valid && (  userForm.$submitted),
+                                                                    'has-success': userForm.Fs.$valid && (!userForm.$pristine || userForm.$submitted)}">
+                                    <label class="input-group-addon " for="Fs">Fs</label>
+                                    <input class="form-control" id="Fs" name="Fs" ng-model="Fs" type="number" required="" />
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="input-group" ng-class="{'has-error': !userForm.mic_num.$valid && (  userForm.$submitted),
+                                                                    'has-success': userForm.mic_num.$valid && (!userForm.$pristine || userForm.$submitted)}">
+                                    <label class="input-group-addon " for="mic_num">mic_num</label>
+                                    <input class="form-control" id="mic_num" name="mic_num" ng-model="mic_num" type="number" required="" />
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="input-group" ng-class="{'has-error': !userForm.speaker_num.$valid && (  userForm.$submitted),
+                                                                    'has-success': userForm.speaker_num.$valid && (!userForm.$pristine || userForm.$submitted)}">
+                                    <label class="input-group-addon " for="speaker_num">speaker_num</label>
+                                    <input class="form-control" id="speaker_num" name="speaker_num" ng-model="speaker_num" type="number" required="" />
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <div class="input-group" ng-class="{'has-error': !userForm.doa_once.$valid && (  userForm.$submitted),
+                                                                    'has-success': userForm.doa_once.$valid && (!userForm.$pristine || userForm.$submitted)}">
+                                    <label class="input-group-addon " for="doa_once">doa_once</label>
+                                    <!--<input class="form-control" id="doa_once" name="doa_once" ng-model="doa_once" type="" required="" />-->
+
+                                    <select  class="form-control" id="doa_once" name="doa_once" ng-model="doa_once"  required>
+                                        <option value="true">true</option>
+                                        <option value="false">false</option>
+
+                                    </select>
+
+
+
+
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="input-group" ng-class="{'has-error': !userForm.doa_result.$valid && (  userForm.$submitted),
+                                                                    'has-success': userForm.doa_result.$valid && (!userForm.$pristine || userForm.$submitted)}">
+                                    <label class="input-group-addon " for="doa_result">doa_result</label>
+                                    <input class="form-control" id="doa_result" name="doa_result" ng-model="doa_result" type="number" required="" />
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="input-group" ng-class="{'has-error': !userForm.amplify.$valid && (  userForm.$submitted),
+                                                                    'has-success': userForm.amplify.$valid && (!userForm.$pristine || userForm.$submitted)}">
+                                    <label class="input-group-addon " for="amplify">amplify</label>
+                                    <input class="form-control" id="amplify" name="amplify" ng-model="amplify" type="number" required="" />
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="input-group" ng-class="{'has-error': !userForm.wakeupth.$valid && (  userForm.$submitted),
+                                                                    'has-success': userForm.wakeupth.$valid && (!userForm.$pristine || userForm.$submitted)}">
+                                    <label class="input-group-addon " for="wakeupth">wakeupth</label>
+                                    <!--<input class="form-control" id="wakeupth" name="wakeupth" ng-model="wakeupth" type="number" required="" />-->
+                                    <select  class="form-control" id="wakeupth" name="wakeupth" ng-model="wakeupth"  required>
+                                        <option value="0.55">0.25</option>
+                                        <option value="0.3">0.3</option>
+                                        <option value="0.25">0.55</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <div class="input-group" ng-class="{'has-error': !userForm.wakeupmode.$valid && (  userForm.$submitted),
+                                                                    'has-success': userForm.wakeupmode.$valid && (!userForm.$pristine || userForm.$submitted)}">
+                                    <label class="input-group-addon " for="wakeupmode">wakeupmode</label>
+                                    <!--<input class="form-control" id="wakeupmode" name="wakeupmode" ng-model="wakeupmode" type="number" required="" />-->
+
+                                    <select  class="form-control" id="wakeupmode" name="wakeupmode" ng-model="wakeupmode"  required >
+                                        <option value="1212">1212</option>
+                                        <option value="1234">1234</option>
+
+                                    </select>
+
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="input-group" ng-class="{'has-error': !userForm.VAD_amplify.$valid && (  userForm.$submitted),
+                                                                    'has-success': userForm.VAD_amplify.$valid && (!userForm.$pristine || userForm.$submitted)}">
+                                    <label class="input-group-addon " for="VAD_amplify">VAD_amplify</label>
+                                    <input class="form-control" id="VAD_amplify" name="VAD_amplify" ng-model="VAD_amplify" type="number" required="" />
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="input-group" ng-class="{'has-error': !userForm.AEC_ON.$valid && (  userForm.$submitted),
+                                                                    'has-success': userForm.AEC_ON.$valid && (!userForm.$pristine || userForm.$submitted)}">
+                                    <label class="input-group-addon " for="AEC_ON">AEC_ON</label>
+                                    <!--<input class="form-control" id="AEC_ON" name="AEC_ON" ng-model="AEC_ON" type="number" required="" />-->
+                                    <select  class="form-control" id="AEC_ON" name="AEC_ON" ng-model="AEC_ON"  required>
+                                        <option value="0">0</option>
+                                        <option value="1">1</option>
+                                    </select>
+
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="input-group" ng-class="{'has-error': !userForm.WAKEUP_DENOISE_ON.$valid && (  userForm.$submitted),
+                                                                    'has-success': userForm.WAKEUP_DENOISE_ON.$valid && (!userForm.$pristine || userForm.$submitted)}">
+                                    <label class="input-group-addon " for="WAKEUP_DENOISE_ON">WAKEUP_DENOISE_ON</label>
+                                    <!--<input class="form-control" id="WAKEUP_DENOISE_ON" name="WAKEUP_DENOISE_ON" ng-model="WAKEUP_DENOISE_ON" type="number" required="" />-->
+                                    <select  class="form-control" id="WAKEUP_DENOISE_ON" name="WAKEUP_DENOISE_ON" ng-model="WAKEUP_DENOISE_ON"  required>
+                                        <option value="0">0</option>
+                                        <option value="1">1</option>
+
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="input-group" ng-class="{'has-error': !userForm.DEREVERB_ON.$valid && (  userForm.$submitted),
+                                                                    'has-success': userForm.DEREVERB_ON.$valid && (!userForm.$pristine || userForm.$submitted)}">
+                                    <label class="input-group-addon " for="DEREVERB_ON">DEREVERB_ON</label>
+                                    <!--<input class="form-control" id="DEREVERB_ON" name="DEREVERB_ON" ng-model="DEREVERB_ON" type="number" required="" />-->
+                                    <select  class="form-control" id="DEREVERB_ON" name="DEREVERB_ON" ng-model="DEREVERB_ON"  required>
+                                        <option value="0">0</option>
+                                        <option value="1">1</option>
+
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="input-group" ng-class="{'has-error': !userForm.ADAPTIVEBEAM_ON.$valid && (  userForm.$submitted),
+                                                                    'has-success': userForm.ADAPTIVEBEAM_ON.$valid && (!userForm.$pristine || userForm.$submitted)}">
+                                    <label class="input-group-addon " for="ADAPTIVEBEAM_ON">ADAPTIVEBEAM_ON</label>
+                                    <!--<input class="form-control" id="ADAPTIVEBEAM_ON" name="ADAPTIVEBEAM_ON" ng-model="ADAPTIVEBEAM_ON" type="number" required="" />-->
+                                    <select  class="form-control" id="ADAPTIVEBEAM_ON" name="ADAPTIVEBEAM_ON" ng-model="ADAPTIVEBEAM_ON"  required>
+                                        <option value="0">0</option>
+                                        <option value="1">1</option>
+
+                                    </select>
+
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <div class="input-group" ng-class="{'has-error': !userForm.MONOEN_ON.$valid && (  userForm.$submitted),
+                                                                    'has-success': userForm.MONOEN_ON.$valid && (!userForm.$pristine || userForm.$submitted)}">
+                                    <label class="input-group-addon " for="MONOEN_ON">MONOEN_ON</label>
+                                    <!--<input class="form-control" id="MONOEN_ON" name="MONOEN_ON" ng-model="MONOEN_ON" type="number" required="" />-->
+                                    <select  class="form-control" id="MONOEN_ON" name="MONOEN_ON" ng-model="MONOEN_ON" required>
+                                        <option value="0">0</option>
+                                        <option value="1">1</option>
+
+                                    </select>
+
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="input-group" ng-class="{'has-error': !userForm.AGC_ON.$valid && (  userForm.$submitted),
+                                                                    'has-success': userForm.AGC_ON.$valid && (!userForm.$pristine || userForm.$submitted)}">
+                                    <label class="input-group-addon " for="AGC_ON">AGC_ON</label>
+                                    <!--<input class="form-control" id="AGC_ON" name="AGC_ON" ng-model="AGC_ON" type="number" required="" />-->
+                                    <select  class="form-control" id="AGC_ON" name="AGC_ON" ng-model="AGC_ON" required>
+                                        <option value="0">0</option>
+                                        <option value="1">1</option>
+
+                                    </select>
+
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="input-group" ng-class="{'has-error': !userForm.BOARD.$valid && (  userForm.$submitted),
+                                                                    'has-success': userForm.BOARD.$valid && (!userForm.$pristine || userForm.$submitted)}">
+                                    <label class="input-group-addon " for="BOARD">BOARD</label>
+                                    <input class="form-control" id="BOARD" name="BOARD" ng-model="BOARD" type="number" required="" />
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="input-group" ng-class="{'has-error': !userForm.SAMPLE.$valid && (  userForm.$submitted),
+                                                                    'has-success': userForm.SAMPLE.$valid && (!userForm.$pristine || userForm.$submitted)}">
+                                    <label class="input-group-addon " for="SAMPLE">SAMPLE</label>
+                                    <input class="form-control" id="SAMPLE" name="SAMPLE" ng-model="SAMPLE" type="number" required="" />
+                                </div>
+                            </div>
+                        </div>
+                        <br/>
+                    </div>
+                    <div class="panel panel-info">
+                        <div class="panel-heading">
+                            Optional configs
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <div class="input-group" ng-class="{'has-error': !userForm.LED_ON.$valid && (  userForm.$submitted),
+                                                                    'has-success': userForm.LED_ON.$valid &&(userForm.LED_ON.$dirty)&& (!userForm.$pristine || userForm.$submitted)}">
+                                    <label class="input-group-addon " for="LED_ON">LED_ON</label>
+                                    <!--<input class="form-control" id="LED_ON" name="LED_ON" ng-model="LED_ON" type="number"  />-->
+                                    <select  class="form-control" id="LED_ON" name="LED_ON" ng-model="LED_ON" >
+                                        <option value="0">0</option>
+                                        <option value="1">1</option>
+                                        <option value=""></option>
+
+                                    </select>
+
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="input-group" ng-class="{'has-error': !userForm.GESTURE_ON.$valid && (  userForm.$submitted),
+                                                                    'has-success': userForm.GESTURE_ON.$valid &&(userForm.GESTURE_ON.$dirty)&& (!userForm.$pristine || userForm.$submitted)}">
+                                    <label class="input-group-addon " for="GESTURE_ON">GESTURE_ON</label>
+                                    <!--<input class="form-control" id="GESTURE_ON" name="GESTURE_ON" ng-model="GESTURE_ON" type="number"  />-->
+
+                                    <select  class="form-control" id="GESTURE_ON" name="GESTURE_ON" ng-model="GESTURE_ON" >
+                                        <option value="0">0</option>
+                                        <option value="1">1</option>
+                                        <option value=""></option>
+
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="input-group" ng-class="{'has-error': !userForm.HW.$valid && (  userForm.$submitted),
+                                                                    'has-success': userForm.HW.$valid &&(userForm.HW.$dirty)&& (!userForm.$pristine || userForm.$submitted)}">
+                                    <label class="input-group-addon " for="HW">HW</label>
+                                    <input class="form-control" id="HW" name="HW" ng-model="HW" type="text"  />
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="input-group" ng-class="{'has-error': !userForm.CH_MAP.$valid && (  userForm.$submitted),
+                                                                    'has-success': userForm.CH_MAP.$valid &&(userForm.CH_MAP.$dirty)&& (!userForm.$pristine || userForm.$submitted)}">
+                                    <label class="input-group-addon " for="CH_MAP">CH_MAP</label>
+                                    <input class="form-control" id="CH_MAP" name="CH_MAP" ng-model="CH_MAP" type="text"  />
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="input-group" ng-class="{'has-error': !userForm.EXTERNAL_SOURCE.$valid && (  userForm.$submitted),
+                                                                    'has-success': userForm.EXTERNAL_SOURCE.$valid &&(userForm.EXTERNAL_SOURCE.$dirty)&& (!userForm.$pristine || userForm.$submitted)}">
+                                    <label class="input-group-addon " for="EXTERNAL_SOURCE">EXTERNAL_SOURCE</label>
+                                    <!--<input class="form-control" id="EXTERNAL_SOURCE" name="EXTERNAL_SOURCE" ng-model="EXTERNAL_SOURCE" type="number"  />-->
+                                    <select  class="form-control" id="EXTERNAL_SOURCE" name="EXTERNAL_SOURCE" ng-model="EXTERNAL_SOURCE" >
+                                        <option value="0">0</option>
+                                        <option value="1">1</option>
+                                        <option value=""></option>
+
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="input-group" ng-class="{'has-error': !userForm.SAMPLE_RATE.$valid && (  userForm.$submitted),
+                                                                    'has-success': userForm.SAMPLE_RATE.$valid &&(userForm.SAMPLE_RATE.$dirty)&& (!userForm.$pristine || userForm.$submitted)}">
+                                    <label class="input-group-addon " for="SAMPLE_RATE">SAMPLE_RATE</label>
+                                    <input class="form-control" id="SAMPLE_RATE" name="SAMPLE_RATE" ng-model="SAMPLE_RATE" type="number"  />
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="input-group" ng-class="{'has-error': !userForm.BIT.$valid && (  userForm.$submitted),
+                                                                    'has-success': userForm.BIT.$valid &&(userForm.BIT.$dirty)&& (!userForm.$pristine || userForm.$submitted)}">
+                                    <label class="input-group-addon " for="BIT">BIT</label>
+                                    <input class="form-control" id="BIT" name="BIT" ng-model="BIT" type="number"  />
+                                </div>
+                            </div>
+
+                        </div>
+                        <br />
+                        <div class="row">
+
+                            <div class="col-lg-4">
+                                <div class="input-group" ng-class="{'has-error': !userForm.MIC_SHIFT_BITS.$valid && (  userForm.$submitted),
+                                                                    'has-success': userForm.MIC_SHIFT_BITS.$valid &&(userForm.MIC_SHIFT_BITS.$dirty)&& (!userForm.$pristine || userForm.$submitted)}">
+                                    <label class="input-group-addon " for="MIC_SHIFT_BITS">MIC_SHIFT_BITS</label>
+                                    <input class="form-control" id="MIC_SHIFT_BITS" name="MIC_SHIFT_BITS" ng-model="MIC_SHIFT_BITS" type="number"  />
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4">
+                                <div class="input-group" ng-class="{'has-error': !userForm.REF_SHIFT_BITS.$valid && (  userForm.$submitted),
+                                                                    'has-success': userForm.REF_SHIFT_BITS.$valid &&(userForm.REF_SHIFT_BITS.$dirty)&& (!userForm.$pristine || userForm.$submitted)}">
+                                    <label class="input-group-addon " for="REF_SHIFT_BITS">REF_SHIFT_BITS</label>
+                                    <input class="form-control" id="REF_SHIFT_BITS" name="REF_SHIFT_BITS" ng-model="REF_SHIFT_BITS" type="number"  />
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4">
+                                <div class="input-group" ng-class="{'has-error': !userForm.FAKE_OUTDIR.$valid && (  userForm.$submitted),
+                                                                    'has-success': userForm.FAKE_OUTDIR.$valid &&(userForm.FAKE_OUTDIR.$dirty)&& (!userForm.$pristine || userForm.$submitted)}">
+                                    <label class="input-group-addon " for="FAKE_OUTDIR">FAKE_OUTDIR</label>
+                                    <input class="form-control" id="FAKE_OUTDIR" name="FAKE_OUTDIR" ng-model="FAKE_OUTDIR" type="text"  />
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+
+
+
+                            <div class="col-lg-4">
+                                <div class="input-group" ng-class="{'has-error': !userForm.WOPT_BIN_NAME.$valid && (  userForm.$submitted),
+                                                                    'has-success': userForm.WOPT_BIN_NAME.$valid &&(userForm.WOPT_BIN_NAME.$dirty)&& (!userForm.$pristine || userForm.$submitted)}">
+                                    <label class="input-group-addon " for="WOPT_BIN_NAME">WOPT_BIN_NAME</label>
+                                    <input class="form-control" id="WOPT_BIN_NAME" name="WOPT_BIN_NAME" ng-model="WOPT_BIN_NAME" type="text"  />
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <br />
+                    </div>
+                    <button id="submit_id" type="submit" ng-model="sub_text" ng-disabled="sub_disable" class="btn btn-primary">{{ sub_text }}</button>
+                    <img id="img_id" src="img/1.gif" ng-show="isShowImg" />
+                    <div hidden>
+                        <a id="tag_a" href="/rawdata/v1/download"></a>
+
+                    </div>
+                </form>
+
+
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
