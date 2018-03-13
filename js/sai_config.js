@@ -2,6 +2,36 @@ APP.controller('RawdataDownloadToolController',
     function($scope, $http) {
         $http.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
         $http.defaults.headers.post['dataType'] = 'json';
+
+        $scope.CORP = "sai";
+        $scope.MicType = "0";
+        $scope.MIC_RADIUS = 0.035;
+        $scope.NFFT = 512;
+        $scope.In_len = 256;
+        $scope.Fs = 16000;
+        $scope.mic_num = 6;
+        $scope.speaker_num = 1;
+        $scope.doa_once = "false";
+        $scope.doa_result = -1;
+        $scope.amplify = 25;
+        $scope.wakeupth = "0.4";
+        $scope.wakeupmode = "1212";
+        $scope.VAD_amplify = 100;
+        $scope.AEC_ON = "1";
+        $scope.WAKEUP_DENOISE_ON = "1";
+        $scope.DEREVERB_ON = "1";
+        $scope.ADAPTIVEBEAM_ON = "1";
+        $scope.MONOEN_ON = "1";
+        $scope.AGC_ON = "1";
+        $scope.BOARD = 8;
+        $scope.SAMPLE = 1024;
+
+
+
+
+
+
+
         $scope.isShow = false;
         $scope.isShowImg = false;
         $scope.sub_text = 'Submit';
